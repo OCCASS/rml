@@ -87,7 +87,7 @@ body {
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
   .header__burger {
     display: block;
     order: 2;
@@ -191,7 +191,7 @@ body {
   opacity: 0.85;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
   .welcome__images {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(2, 1fr);
@@ -309,7 +309,7 @@ body {
   font-size: 20px;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
   .about__content {
     grid-template-rows: 1fr max-content;
     grid-template-columns: 1fr;
@@ -449,7 +449,7 @@ body {
   height: 32px;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
   .footer {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(3, fit-content);
