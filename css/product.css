@@ -52,6 +52,12 @@
   padding-left: 4px;
 }
 
+.info__button {
+  color: #ffffff;
+  background: #000000;
+  padding: 8px 16px;
+}
+
 @media screen and (max-width: 1024px) {
   .main {
     grid-template-columns: 1fr;
