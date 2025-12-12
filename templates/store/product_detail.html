@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/product.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <main class="main">
+    <section class="carousel" aria-label="Фотографии товара">
+      <div class="carousel__viewport">
+        <div class="carousel__track">
+          {% for image in product.images.all %}
+            <div class="carousel__slide {% if forloop.first %}is-active{% endif %}">
+              <img class="carousel__image" src="{% static image.image_path %}" alt="{{ image.alt_text|default:product.name }}" />
+            </div>
+          {% empty %}
+            <div class="carousel__slide is-active">
+              <img class="carousel__image" src="{% static 'images/main1.jpg' %}" alt="{{ product.name }}" />
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <button class="carousel__control carousel__control--prev" aria-label="Предыдущий снимок">‹</button>
+      <button class="carousel__control carousel__control--next" aria-label="Следующий снимок">›</button>
+      <div class="carousel__dots" role="tablist" aria-label="Переключатель изображений">
+        {% for image in product.images.all %}
+          <button class="carousel__dot {% if forloop.first %}is-active{% endif %}" data-slide="{{ forloop.counter0 }}" aria-label="Слайд {{ forloop.counter }}"></button>
+        {% empty %}
+          <button class="carousel__dot is-active" data-slide="0" aria-label="Слайд 1"></button>
+        {% endfor %}
+      </div>
+    </section>
+    <div class="main__header">
+      <h1 class="main__title">{{ product.name }}</h1>
+      <h2 class="main__price">{{ product.price|floatformat:0 }}₽</h2>
+    </div>
+    <div class="main__info">
+      <div class="main__details">
+        <h3 class="details__title">Описание</h3>
+        <div>
+          <p>{{ product.description }}</p>
+        </div>
+      </div>
+      <div class="main__details">
+        <h3 class="details__title">Детали</h3>
+        <ul class="details__list">
+          {% for detail in product.details %}
+            <li class="details__list--item">
+              <span>{{ detail }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="product__actions">
+        <form method="post" action="{% url 'store:buy_product' product.slug %}" class="product__action">
+          {% csrf_token %}
+          <label class="product__label">
+            Количество
+            <input type="number" min="1" value="1" name="quantity" class="product__quantity" />
+          </label>
+          <button class="info__button" type="submit">Купить сейчас</button>
+        </form>
+        <form method="post" action="{% url 'store:add_to_cart' product.slug %}" class="product__action">
+          {% csrf_token %}
+          <label class="product__label">
+            Количество
+            <input type="number" min="1" value="1" name="quantity" class="product__quantity" />
+          </label>
+          <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+          <button class="info__button info__button--secondary" type="submit">В корзину</button>
+        </form>
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/carousel.js' %}"></script>
+{% endblock %}

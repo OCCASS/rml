@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/cart.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="cart">
+    <div class="cart__header">
+      <h1 class="cart__title">Корзина</h1>
+      <p class="cart__meta">{{ cart.total_quantity }} товаров</p>
+    </div>
+    {% if cart.items %}
+      <div class="cart__items">
+        {% for item in cart.items %}
+          {% with image=item.product.main_image %}
+            <article class="cart__item">
+              {% if image %}
+                <img class="cart__item-image" src="{% static image.image_path %}" alt="{{ image.alt_text|default:item.product.name }}" />
+              {% else %}
+                <img class="cart__item-image" src="{% static 'images/main1.jpg' %}" alt="{{ item.product.name }}" />
+              {% endif %}
+              <div class="cart__item-info">
+                <div class="cart__item-header">
+                  <a class="cart__item-title" href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
+                  <form method="post" action="{% url 'store:remove_from_cart' item.product.slug %}">
+                    {% csrf_token %}
+                    <button type="submit" class="cart__remove">Удалить</button>
+                  </form>
+                </div>
+                <p class="cart__item-price">{{ item.product.price|floatformat:0 }}₽</p>
+                <div class="cart__item-controls">
+                  <form method="post" action="{% url 'store:add_to_cart' item.product.slug %}" class="cart__quantity-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="replace" value="1" />
+                    <label class="cart__quantity-label">
+                      Количество
+                      <input
+                        type="number"
+                        min="1"
+                        value="{{ item.quantity }}"
+                        name="quantity"
+                        class="cart__quantity-input"
+                        aria-label="Количество для {{ item.product.name }}"
+                      />
+                    </label>
+                    <button type="submit" class="cart__update">Обновить</button>
+                  </form>
+                  <div class="cart__item-total">{{ item.total_price|floatformat:0 }}₽</div>
+                </div>
+              </div>
+            </article>
+          {% endwith %}
+        {% endfor %}
+      </div>
+      <div class="cart__summary">
+        <div class="cart__summary-line">
+          <span>Итого</span>
+          <strong>{{ cart.total_amount|floatformat:0 }}₽</strong>
+        </div>
+        <form method="post" action="{% url 'store:checkout' %}">
+          {% csrf_token %}
+          <button type="submit" class="cart__checkout">Перейти к оплате</button>
+        </form>
+      </div>
+    {% else %}
+      <p class="cart__empty">Корзина пока пуста.</p>
+    {% endif %}
+  </section>
+{% endblock %}

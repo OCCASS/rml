@@ -1,0 +1,118 @@
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <title>RML</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/header.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}" />
+    {% block extra_css %}{% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=BBH+Sans+Bartle&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Russo+One&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <button id="burger" class="header__burger" aria-label="Открыть меню">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect y="11" width="48" height="5" fill="black" />
+          <rect y="21.5" width="48" height="5" fill="black" />
+          <rect y="32" width="48" height="5" fill="black" />
+        </svg>
+      </button>
+      <nav id="navbar" class="header__nav">
+        <ul class="header__list">
+          <li>
+            <a class="header__link" href="{% url 'store:catalog' %}#catalog">каталог</a>
+          </li>
+          <li>
+            <a class="header__link" href="{% url 'store:catalog' %}#about">о бренде</a>
+          </li>
+          <li>
+            <a class="header__link" href="{% url 'store:catalog' %}#partnership">сотрудничество</a>
+          </li>
+          <li>
+            <a class="header__link" href="#">angel bag</a>
+          </li>
+          <li class="header__link--cart">
+            <a class="header__link" href="{% url 'store:cart' %}">корзина ({{ cart_items_count|default:0 }})</a>
+          </li>
+        </ul>
+      </nav>
+      <div class="header__logo">
+        <a href="{% url 'store:catalog' %}" aria-label="На главную">
+          {% include 'store/partials/logo.svg' %}
+        </a>
+      </div>
+      <div class="header__cart">
+        <a class="header__link" href="{% url 'store:cart' %}">корзина ({{ cart_items_count|default:0 }})</a>
+      </div>
+    </header>
+    <main>
+      {% if messages %}
+        <div class="flash">
+          {% for message in messages %}
+            <div class="flash__item flash__item--{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="footer">
+      <ul class="footer__list">
+        <li>
+          <a class="footer__link" href="{% url 'store:catalog' %}#catalog">каталог</a>
+        </li>
+        <li>
+          <a class="footer__link" href="{% url 'store:catalog' %}#about">о бренде</a>
+        </li>
+        <li>
+          <a class="footer__link" href="{% url 'store:catalog' %}#partnership">сотрудничество</a>
+        </li>
+        <li>
+          <a class="footer__link" href="#">angel back</a>
+        </li>
+      </ul>
+      <div class="footer__logo">
+        {% include 'store/partials/logo.svg' %}
+      </div>
+      <div class="footer__social">
+        <ul class="social__list">
+          <li>
+            <a aria-label="VK">
+              {% include 'store/partials/social_vk.svg' %}
+            </a>
+          </li>
+          <li>
+            <a aria-label="Telegram">
+              {% include 'store/partials/social_telegram.svg' %}
+            </a>
+          </li>
+          <li>
+            <a aria-label="Instagram">
+              {% include 'store/partials/social_instagram.svg' %}
+            </a>
+          </li>
+        </ul>
+        <a href="mailto:info@rml.ru">info@rml.ru</a>
+      </div>
+    </footer>
+    <script src="{% static 'js/navbar.js' %}"></script>
+    <script>
+      (function () {
+        const flashes = document.querySelectorAll('.flash__item');
+        flashes.forEach((item) => {
+          setTimeout(() => {
+            item.classList.add('is-hiding');
+            setTimeout(() => item.remove(), 300);
+          }, 3000);
+        });
+      })();
+    </script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

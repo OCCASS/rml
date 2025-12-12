@@ -1,0 +1,35 @@
+{% load static %}
+<div class="catalog__cards--wrapper">
+  <div class="catalog__cards">
+    {% for product in products %}
+      {% with image=product.main_image %}
+        <div class="catalog__card">
+          {% if image %}
+            <img class="catalog__card--image" src="{% static image.image_path %}" alt="{{ image.alt_text|default:product.name }}" />
+          {% else %}
+            <img class="catalog__card--image" src="{% static 'images/main1.jpg' %}" alt="{{ product.name }}" />
+          {% endif %}
+          <p class="catalog__card--title">
+            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+          </p>
+          <p class="catalog__card--price">{{ product.price|floatformat:0 }}₽</p>
+          <div class="catalog__card--actions">
+            <form method="post" action="{% url 'store:buy_product' product.slug %}">
+              {% csrf_token %}
+              <input type="hidden" name="quantity" value="1" />
+              <button class="catalog__card--button" type="submit">Купить</button>
+            </form>
+            <form method="post" action="{% url 'store:add_to_cart' product.slug %}">
+              {% csrf_token %}
+              <input type="hidden" name="quantity" value="1" />
+              <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+              <button class="catalog__card--button catalog__card--button--ghost" type="submit">В корзину</button>
+            </form>
+          </div>
+        </div>
+      {% endwith %}
+    {% empty %}
+      <p>Скоро добавим новые товары.</p>
+    {% endfor %}
+  </div>
+</div>

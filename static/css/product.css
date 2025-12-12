@@ -132,6 +132,39 @@
   color: #ffffff;
   background: #000000;
   padding: 8px 16px;
+  border: 1px solid #000000;
+  cursor: pointer;
+}
+
+.info__button--secondary {
+  background: transparent;
+  color: #000000;
+}
+
+.product__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product__action {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.product__label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.product__quantity {
+  width: 80px;
+  padding: 6px 8px;
+  border: 1px solid #000000;
 }
 
 @media screen and (max-width: 1024px) {

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/cart.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="cart">
+    <div class="cart__header">
+      <h1 class="cart__title">Оплата</h1>
+      {% if order %}
+        <p class="cart__meta">Заказ #{{ order.id }}</p>
+      {% endif %}
+    </div>
+    {% if order %}
+      <p>
+        Статус: <strong>{{ order.get_status_display }}</strong>
+        {% if payment_status %} (YooKassa: {{ payment_status }}){% endif %}
+      </p>
+      <div class="cart__items">
+        {% for item in order.items.all %}
+          <article class="cart__item">
+            <div class="cart__item-info">
+              <div class="cart__item-header">
+                <span class="cart__item-title">{{ item.product_name }}</span>
+              </div>
+              <p class="cart__item-price">{{ item.unit_price|floatformat:0 }}₽</p>
+              <div class="cart__item-controls">
+                <div class="cart__quantity-label">Количество: {{ item.quantity }}</div>
+                <div class="cart__item-total">{{ item.line_total|floatformat:0 }}₽</div>
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+      <div class="cart__summary">
+        <div class="cart__summary-line">
+          <span>Итого</span>
+          <strong>{{ order.total_amount|floatformat:0 }}₽</strong>
+        </div>
+        <a class="cart__checkout" href="{% url 'store:catalog' %}">Вернуться в каталог</a>
+      </div>
+    {% else %}
+      <p class="cart__empty">Мы не нашли информацию об оплате. Попробуйте вернуться в каталог.</p>
+      <a class="cart__checkout" href="{% url 'store:catalog' %}">В каталог</a>
+    {% endif %}
+  </section>
+{% endblock %}

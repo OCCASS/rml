@@ -124,10 +124,27 @@
   font-weight: 500;
 }
 
+.catalog__card--price {
+  font-weight: 600;
+}
+
 .catalog__card--button {
   color: #ffffff;
   background: #000000;
   padding: 8px 16px;
+  border: 1px solid #000000;
+  cursor: pointer;
+}
+
+.catalog__card--actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.catalog__card--button--ghost {
+  background: transparent;
+  color: #000000;
 }
 
 .catalog__separator {
@@ -246,6 +263,7 @@
   color: #ffffff;
   background: #000000;
   padding: 8px 16px;
+  cursor: pointer;
 }
 
 .partnership__tip--link {

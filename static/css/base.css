@@ -1,0 +1,90 @@
+:root {
+  --text-color: #000000;
+}
+
+*,
+*::after,
+*::before,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: var(--text-color);
+}
+
+a {
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.noscroll {
+  overflow: hidden;
+}
+
+body {
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+}
+
+.flash {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  width: min(1100px, calc(100% - 24px));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.flash__item {
+  padding: 12px 16px;
+  border: 1px solid #000000;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  pointer-events: auto;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.flash__item.is-hiding {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.flash__item--success {
+  background: #e7ffed;
+  border-color: #2c7a4b;
+}
+
+.flash__item--error {
+  background: #ffecec;
+  border-color: #c53030;
+}
+
+@media screen and (max-width: 600px) {
+  .flash {
+    top: 12px;
+    width: calc(100% - 16px);
+  }
+
+  .flash__item {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
