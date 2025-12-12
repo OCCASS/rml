@@ -64,7 +64,58 @@
       </div>
     </header>
     <main class="main">
-      <img class="main__image" src="images/catalog5.jpeg" />
+      <section class="carousel" aria-label="Фотографии товара">
+        <div class="carousel__viewport">
+          <div class="carousel__track">
+            <div class="carousel__slide is-active">
+              <img
+                class="carousel__image"
+                src="images/catalog5.jpeg"
+                alt="Шарф Розовый — общий вид"
+              />
+            </div>
+            <div class="carousel__slide">
+              <img
+                class="carousel__image"
+                src="images/catalog4.jpg"
+                alt="Шарф Розовый — вид спереди"
+              />
+            </div>
+            <div class="carousel__slide">
+              <img
+                class="carousel__image"
+                src="images/catalog3.jpg"
+                alt="Шарф Розовый — детали ремешка"
+              />
+            </div>
+            <div class="carousel__slide">
+              <img
+                class="carousel__image"
+                src="images/catalog2.jpeg"
+                alt="Шарф Розовый — вид сбоку"
+              />
+            </div>
+          </div>
+        </div>
+        <button
+          class="carousel__control carousel__control--prev"
+          aria-label="Предыдущий снимок"
+        >
+          ‹
+        </button>
+        <button
+          class="carousel__control carousel__control--next"
+          aria-label="Следующий снимок"
+        >
+          ›
+        </button>
+        <div class="carousel__dots" role="tablist" aria-label="Переключатель изображений">
+          <button class="carousel__dot is-active" data-slide="0" aria-label="Слайд 1"></button>
+          <button class="carousel__dot" data-slide="1" aria-label="Слайд 2"></button>
+          <button class="carousel__dot" data-slide="2" aria-label="Слайд 3"></button>
+          <button class="carousel__dot" data-slide="3" aria-label="Слайд 4"></button>
+        </div>
+      </section>
       <div class="main__header">
         <h1 class="main__title">Шарф “Розовый”</h1>
         <h2 class="main__price">7&nbsp;990₽</h2>
@@ -197,6 +248,7 @@
         <a href="mailto:info@rml.ru">info@rml.ru</a>
       </div>
     </footer>
+    <script src="js/carousel.js"></script>
     <script src="js/navbar.js"></script>
   </body>
 </html>
