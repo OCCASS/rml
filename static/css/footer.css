@@ -7,6 +7,11 @@
   border-top: 5px double #000000;
 }
 
+.footer_inn {
+  padding: 8px;
+  grid-column: 1/4;
+}
+
 .footer__list {
   display: flex;
   flex-direction: column;
@@ -51,6 +56,12 @@
     grid-template-columns: 1fr;
     grid-template-rows: repeat(3, fit-content);
     gap: 32px;
+  }
+
+  .footer_inn {
+    grid-column: 1/1;
+    justify-self: center;
+    align-self: center;
   }
 
   .footer__list {
