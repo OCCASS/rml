@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
+from store.forms import PartnershipForm
 from store.models import Order, OrderItem, Product
 from store.services import cart as cart_service
 from store.services.notifications import notify_order_paid, notify_partnership
@@ -25,6 +26,7 @@ def index(request: HttpRequest) -> HttpResponse:
         {
             'first_line_products': first_line_products,
             'second_line_products': second_line_products,
+            'partnership_form': PartnershipForm(),
         },
     )
 
@@ -145,12 +147,17 @@ def payment_success(request: HttpRequest) -> HttpResponse:
 
 @require_POST
 def partnership_submit(request: HttpRequest) -> HttpResponse:
-    email = (request.POST.get('email') or '').strip()
-    comment = (request.POST.get('comment') or '').strip()
-    if not email:
-        messages.error(request, 'Укажите email, чтобы мы могли связаться с вами.')
+    form = PartnershipForm(request.POST)
+    if not form.is_valid():
+        for field_errors in form.errors.values():
+            for error in field_errors:
+                messages.error(request, error)
+                break
         return redirect(f"{reverse('store:catalog')}#partnership")
-    notify_partnership(email=email, comment=comment)
+    notify_partnership(
+        email=form.cleaned_data['email'],
+        comment=form.cleaned_data.get('comment', ''),
+    )
     messages.success(request, 'Спасибо! Мы получили заявку и свяжемся с вами.')
     return redirect(f"{reverse('store:catalog')}#partnership")
 

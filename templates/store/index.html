@@ -94,8 +94,11 @@
     <div class="partnership__content">
       <form class="partnership__form" method="post" action="{% url 'store:partnership_submit' %}">
         {% csrf_token %}
-        <input class="partnership__input" placeholder="Email" name="email" />
-        <textarea class="partnership__textarea" placeholder="Комментарий" rows="10" name="comment"></textarea>
+        {{ partnership_form.email }}
+        {{ partnership_form.comment }}
+        <div class="partnership__captcha">
+          {{ partnership_form.captcha }}
+        </div>
         <p class="partnership__tip">
           Нажимая кнопку “Отправить” вы соглашаетесь с
           <a class="partnership__tip--link">политикой обработки персональных данных</a>
@@ -105,4 +108,8 @@
       <img class="partnership__image" src="{% static 'images/partnership.jpg' %}" aria-hidden="true" />
     </div>
   </section>
+{% endblock %}
+
+{% block extra_js %}
+  {{ partnership_form.media }}
 {% endblock %}

@@ -266,6 +266,17 @@
   cursor: pointer;
 }
 
+.partnership__captcha {
+  margin: 8px 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.partnership__captcha .g-recaptcha {
+  transform: scale(0.92);
+  transform-origin: 0 0;
+}
+
 .partnership__tip--link {
   text-decoration: underline;
 }
@@ -283,6 +294,10 @@
   .partnership__form {
     width: 100%;
     gap: 16px;
+  }
+
+  .partnership__captcha .g-recaptcha {
+    transform: scale(0.85);
   }
 }
 /* partnership end */
