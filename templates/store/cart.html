@@ -7,15 +7,17 @@
 
 {% block content %}
   <section class="cart">
-    <div class="cart__header">
-      <h1 class="cart__title">Корзина</h1>
-      <p class="cart__meta">{{ cart.total_quantity }} товаров</p>
-    </div>
     {% if cart.items %}
       <div class="cart__items">
         {% for item in cart.items %}
           {% with image=item.product.main_image %}
-            <article class="cart__item">
+            <article
+              class="cart__item"
+              data-item
+              data-product-id="{{ item.product.id }}"
+              data-add-url="{% url 'store:add_to_cart' item.product.slug %}"
+              data-remove-url="{% url 'store:remove_from_cart' item.product.slug %}"
+            >
               {% if image %}
                 <img class="cart__item-image" src="{% static image.image_path %}" alt="{{ image.alt_text|default:item.product.name }}" />
               {% else %}
@@ -24,30 +26,22 @@
               <div class="cart__item-info">
                 <div class="cart__item-header">
                   <a class="cart__item-title" href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
-                  <form method="post" action="{% url 'store:remove_from_cart' item.product.slug %}">
-                    {% csrf_token %}
-                    <button type="submit" class="cart__remove">Удалить</button>
-                  </form>
                 </div>
                 <p class="cart__item-price">{{ item.product.price|floatformat:0 }}₽</p>
                 <div class="cart__item-controls">
-                  <form method="post" action="{% url 'store:add_to_cart' item.product.slug %}" class="cart__quantity-form">
-                    {% csrf_token %}
-                    <input type="hidden" name="replace" value="1" />
-                    <label class="cart__quantity-label">
-                      Количество
-                      <input
-                        type="number"
-                        min="1"
-                        value="{{ item.quantity }}"
-                        name="quantity"
-                        class="cart__quantity-input"
-                        aria-label="Количество для {{ item.product.name }}"
-                      />
-                    </label>
-                    <button type="submit" class="cart__update">Обновить</button>
-                  </form>
-                  <div class="cart__item-total">{{ item.total_price|floatformat:0 }}₽</div>
+                  <div class="cart__quantity">
+                    <span class="cart__quantity-title">Количество</span>
+                    <div class="cart__quantity-controls" role="group" aria-label="Количество для {{ item.product.name }}">
+                      <button type="button" class="cart__quantity-btn" data-quantity-action="decrease" aria-label="Уменьшить количество">
+                        -
+                      </button>
+                      <span class="cart__quantity-value" data-quantity>{{ item.quantity }}</span>
+                      <button type="button" class="cart__quantity-btn" data-quantity-action="increase" aria-label="Увеличить количество">
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  <div class="cart__item-total" data-item-total>{{ item.total_price|floatformat:0 }}₽</div>
                 </div>
               </div>
             </article>
@@ -57,7 +51,7 @@
       <div class="cart__summary">
         <div class="cart__summary-line">
           <span>Итого</span>
-          <strong>{{ cart.total_amount|floatformat:0 }}₽</strong>
+          <strong data-cart-total>{{ cart.total_amount|floatformat:0 }}₽</strong>
         </div>
         <form method="post" action="{% url 'store:checkout' %}">
           {% csrf_token %}
@@ -68,4 +62,8 @@
       <p class="cart__empty">Корзина пока пуста.</p>
     {% endif %}
   </section>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/cart.js' %}"></script>
 {% endblock %}

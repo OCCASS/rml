@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+from decimal import Decimal
 from typing import Any, Optional
 
 from django.contrib import messages
 from django.db import transaction
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
@@ -14,6 +15,31 @@ from store.models import Order, OrderItem, Product
 from store.services import cart as cart_service
 from store.services.notifications import notify_order_paid, notify_partnership
 from store.services.payments import create_payment, fetch_payment, update_order_status_from_payment
+
+
+def _is_ajax(request: HttpRequest) -> bool:
+    return request.headers.get('x-requested-with') == 'XMLHttpRequest'
+
+
+def _format_amount(amount: Decimal) -> str:
+    return f'{amount:.0f}'
+
+
+def _build_cart_payload(cart: cart_service.Cart, item: Optional[cart_service.CartItem] = None) -> dict:
+    payload = {
+        'cart': {
+            'total_amount': _format_amount(cart.total_amount),
+            'total_quantity': cart.total_quantity,
+        },
+        'is_empty': cart.total_quantity == 0,
+    }
+    if item:
+        payload['item'] = {
+            'product_id': item.product.id,
+            'quantity': item.quantity,
+            'total_price': _format_amount(item.total_price),
+        }
+    return payload
 
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -46,7 +72,10 @@ def add_to_cart(request: HttpRequest, slug: str) -> HttpResponse:
     product = get_object_or_404(Product, slug=slug)
     quantity = max(int(request.POST.get('quantity', 1)), 1)
     replace = request.POST.get('replace') == '1'
-    cart_service.add_to_cart(request, product.id, quantity, replace=replace)
+    cart = cart_service.add_to_cart(request, product.id, quantity, replace=replace)
+    if _is_ajax(request):
+        item = next((entry for entry in cart.items if entry.product.id == product.id), None)
+        return JsonResponse(_build_cart_payload(cart, item=item))
     messages.success(request, f'{product.name} добавлен в корзину')
     return redirect(request.POST.get('next') or reverse('store:cart'))
 
@@ -54,7 +83,12 @@ def add_to_cart(request: HttpRequest, slug: str) -> HttpResponse:
 @require_POST
 def remove_from_cart(request: HttpRequest, slug: str) -> HttpResponse:
     product = get_object_or_404(Product, slug=slug)
-    cart_service.remove_from_cart(request, product.id)
+    cart = cart_service.remove_from_cart(request, product.id)
+    if _is_ajax(request):
+        payload = _build_cart_payload(cart)
+        payload['removed'] = True
+        payload['product_id'] = product.id
+        return JsonResponse(payload)
     messages.info(request, f'{product.name} убран из корзины')
     return redirect(reverse('store:cart'))
 

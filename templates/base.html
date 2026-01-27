@@ -39,7 +39,7 @@
             <a class="header__link" href="#">angel bag</a>
           </li>
           <li class="header__link--cart">
-            <a class="header__link" href="{% url 'store:cart' %}">корзина ({{ cart_items_count|default:0 }})</a>
+            <a class="header__link" href="{% url 'store:cart' %}">корзина (<span data-cart-count>{{ cart_items_count|default:0 }}</span>)</a>
           </li>
         </ul>
       </nav>
@@ -49,7 +49,7 @@
         </a>
       </div>
       <div class="header__cart">
-        <a class="header__link" href="{% url 'store:cart' %}">корзина ({{ cart_items_count|default:0 }})</a>
+        <a class="header__link" href="{% url 'store:cart' %}">корзина (<span data-cart-count>{{ cart_items_count|default:0 }}</span>)</a>
       </div>
     </header>
     <main>
