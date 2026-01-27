@@ -196,6 +196,7 @@
 
 @media screen and (max-width: 1024px) {
   .about__content {
+    width: 100%;
     grid-template-rows: 1fr max-content;
     grid-template-columns: 1fr;
   }
