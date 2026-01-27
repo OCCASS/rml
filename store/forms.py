@@ -56,6 +56,8 @@ class OrderDetailsForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 'class': 'checkout__input',
+                'type': 'tel',
+                'inputmode': 'numeric',
                 'placeholder': 'Номер телефона',
                 'autocomplete': 'tel',
             }
