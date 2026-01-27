@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/checkout.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <section class="checkout">
+    <div class="checkout__main">
+      <div class="checkout__header">
+        <p class="checkout__title">Оформление заказа</p>
+      </div>
+      <form method="post" action="{% url 'store:checkout_submit' %}" class="checkout__form">
+        {% csrf_token %}
+        <div class="checkout__field">
+          <label class="checkout__label" for="{{ form.full_name.id_for_label }}">ФИО</label>
+          {{ form.full_name }}
+          {% for error in form.full_name.errors %}
+            <p class="checkout__error">{{ error }}</p>
+          {% endfor %}
+        </div>
+        <div class="checkout__field">
+          <label class="checkout__label" for="{{ form.phone.id_for_label }}">Номер телефона</label>
+          {{ form.phone }}
+          {% for error in form.phone.errors %}
+            <p class="checkout__error">{{ error }}</p>
+          {% endfor %}
+        </div>
+        <div class="checkout__field">
+          <label class="checkout__label" for="{{ form.address.id_for_label }}">Адрес</label>
+          {{ form.address }}
+          {% for error in form.address.errors %}
+            <p class="checkout__error">{{ error }}</p>
+          {% endfor %}
+        </div>
+        <button type="submit" class="checkout__submit">Перейти к оплате</button>
+      </form>
+    </div>
+    <aside class="checkout__summary">
+      <p class="checkout__summary-title">Ваш заказ</p>
+      <div class="checkout__summary-line">
+        <span>Товаров</span>
+        <strong>{{ cart.total_quantity }}</strong>
+      </div>
+      <div class="checkout__summary-line">
+        <span>Итого</span>
+        <strong>{{ cart.total_amount|floatformat:0 }}₽</strong>
+      </div>
+    </aside>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/phone_mask.js' %}"></script>
+{% endblock %}

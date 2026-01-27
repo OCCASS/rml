@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
-from store.forms import PartnershipForm
+from store.forms import OrderDetailsForm, PartnershipForm
 from store.models import Order, OrderItem, Product
 from store.services import cart as cart_service
 from store.services.notifications import notify_order_paid, notify_partnership
@@ -129,13 +129,44 @@ def _start_payment_flow(request: HttpRequest, order: Order) -> HttpResponse:
     return redirect(reverse('store:cart'))
 
 
-@require_POST
 def checkout(request: HttpRequest) -> HttpResponse:
     cart = cart_service.get_cart(request)
     if not cart.items:
         messages.error(request, 'Корзина пуста')
         return redirect(reverse('store:catalog'))
-    order = _build_order_from_cart(cart, metadata={'source': 'cart'})
+    return render(
+        request,
+        'store/checkout.html',
+        {
+            'cart': cart,
+            'form': OrderDetailsForm(),
+        },
+    )
+
+
+@require_POST
+def checkout_submit(request: HttpRequest) -> HttpResponse:
+    cart = cart_service.get_cart(request)
+    if not cart.items:
+        messages.error(request, 'Корзина пуста')
+        return redirect(reverse('store:catalog'))
+    form = OrderDetailsForm(request.POST)
+    if not form.is_valid():
+        return render(
+            request,
+            'store/checkout.html',
+            {
+                'cart': cart,
+                'form': form,
+            },
+        )
+    metadata = {
+        'source': 'cart',
+        'customer_name': form.cleaned_data['full_name'],
+        'customer_phone': form.cleaned_data['phone'],
+        'customer_address': form.cleaned_data['address'],
+    }
+    order = _build_order_from_cart(cart, metadata=metadata)
     return _start_payment_flow(request, order)
 
 
